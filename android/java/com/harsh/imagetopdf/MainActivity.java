@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
 
     private WebView web;
     private ValueCallback<Uri[]> filePathCallback;
+    private String pickMode = "gallery";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,12 @@ public class MainActivity extends Activity {
                 }
                 filePathCallback = callback;
 
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                // "files" -> open the Files / My Files document picker directly.
+                // "gallery" -> system image picker (Samsung Gallery, Photos, Files...).
+                String action = "files".equals(pickMode)
+                        ? Intent.ACTION_OPEN_DOCUMENT
+                        : Intent.ACTION_GET_CONTENT;
+                Intent intent = new Intent(action);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 if (params != null && params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE) {
@@ -112,6 +118,11 @@ public class MainActivity extends Activity {
     }
 
     public class Bridge {
+
+        @JavascriptInterface
+        public void setPickMode(String mode) {
+            pickMode = (mode == null || mode.isEmpty()) ? "gallery" : mode;
+        }
 
         @JavascriptInterface
         public void savePdf(final String base64, final String name) {
