@@ -20,6 +20,17 @@ Open `index.html` in any modern browser. That's it — one file, no build step, 
 
 Hosted version: enable GitHub Pages on this repo (Settings → Pages → Deploy from branch → `main` / root) and it will be live at `https://harsh96483517-code.github.io/image-to-pdf/`.
 
+## Android APK
+
+The `android/` folder holds a thin native wrapper: a single-activity WebView app that loads the same `index.html` from `assets/`, bundles `pdf-lib` locally (so it works with no internet), opens the Android photo picker for the Gallery/Camera buttons, and writes the finished PDF straight to **Downloads** through a JavaScript bridge.
+
+- Package: `com.harsh.imagetopdf` · version 1.0
+- minSdk 24 (Android 7.0) · targetSdk 34
+- No internet permission — the app cannot send your photos anywhere
+- Build without Gradle: `bash android/build.sh` (needs JDK 17 + Android SDK build-tools 34 / platform 34)
+
+The APK is signed with a self-signed key, so Android will ask you to allow "install from unknown sources".
+
 ## Notes
 
 - Supported input: any image format your browser can decode (JPG, PNG, WebP, BMP, GIF first frame).
