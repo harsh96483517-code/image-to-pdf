@@ -140,10 +140,15 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h3l2-2.5h8L18 8h3v12H3z"/><circle cx="12" cy="13.5" r="3.4"/></svg>
       Take a photo
     </button>
+    <button class="btn ghost" id="btnFiles" style="grid-column:1/-1;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h6l2 2h10v11H3z"/></svg>
+      Choose from Files
+    </button>
   </div>
   <div class="drop" id="drop">Or drop images here (desktop)</div>
   <input type="file" id="fileGallery" accept="image/*" multiple>
   <input type="file" id="fileCamera" accept="image/*" capture="environment">
+  <input type="file" id="fileFiles" accept="image/*" multiple>
 </div>
 
 <div class="card">
@@ -475,10 +480,19 @@
   }
 
   // ---- wiring ---------------------------------------------------------
-  document.getElementById('btnGallery').onclick = function(){ document.getElementById('fileGallery').click(); };
-  document.getElementById('btnCamera').onclick  = function(){ document.getElementById('fileCamera').click(); };
+  function setPickMode(mode){
+    // tells the Android wrapper which picker to open
+    if (window.AndroidBridge && typeof window.AndroidBridge.setPickMode === 'function'){
+      try { window.AndroidBridge.setPickMode(mode); } catch (e) {}
+    }
+  }
+
+  document.getElementById('btnGallery').onclick = function(){ setPickMode('gallery'); document.getElementById('fileGallery').click(); };
+  document.getElementById('btnCamera').onclick  = function(){ setPickMode('gallery'); document.getElementById('fileCamera').click(); };
+  document.getElementById('btnFiles').onclick   = function(){ setPickMode('files');   document.getElementById('fileFiles').click(); };
   document.getElementById('fileGallery').onchange = function(e){ addFiles(e.target.files); e.target.value = ''; };
   document.getElementById('fileCamera').onchange  = function(e){ addFiles(e.target.files); e.target.value = ''; };
+  document.getElementById('fileFiles').onchange   = function(e){ addFiles(e.target.files); e.target.value = ''; };
   document.getElementById('btnReverse').onclick = reverseList;
   document.getElementById('btnClear').onclick = function(){
     state.forEach(function(it){ try { URL.revokeObjectURL(it.url); } catch(e){} });
